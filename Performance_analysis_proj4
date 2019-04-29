@@ -1,0 +1,15 @@
+Performance Analysis
+
+    Variables
+        Type: OpenMP, pthreads, MPI
+        Eval: runtime(efficiency), memory usage, network
+        Data sizes: 100K - 2GB
+        Num cores: 1-16, multiple machines
+
+
+
+use grep *.out to search files
+
+
+kstat
+        tells you what jobs are running/waiting to run
