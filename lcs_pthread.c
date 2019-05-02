@@ -1,4 +1,3 @@
-//#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,6 +13,7 @@ pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condition_cond = PTHREAD_COND_INITIALIZER;
 
 int fileLines;
+char** entries;
 FILE *fp;
 #define LINE_SIZE 2100
 
@@ -83,7 +83,8 @@ void longest_common_substring(char* str1, char* str2, int len1, int len2, int li
 	
 	pthread_mutex_lock(&condition_next_line);
 	nextLine++;
-	printf("%d-%d: %s\n", line1, line2, resultStr);
+	if (line1 < 100) // only print first 100 lines
+		printf("%d-%d: %s\n", line1, line2, resultStr);
 	pthread_mutex_unlock(&condition_next_line);
 	
 	free(resultStr);
@@ -94,16 +95,6 @@ void *lcs_threading(void *id)
 	int i, s1, s2;
 	int startPos = ((int)id) * ceil((double)fileLines / NUM_THREADS);
 	int endPos = startPos + ceil((double)fileLines / NUM_THREADS);
-
-	char **entries;
-	entries = malloc(sizeof(char*) *fileLines);
-	for (i = 0; i < fileLines; i++)
-	{
-		if (ferror(fp) || feof(fp))
-			break;
-		entries[i] = malloc(sizeof(char) * LINE_SIZE);
-		fgets(entries[i], LINE_SIZE, fp);
-	}
 
 	int l1 = startPos;
 	int l2 = l1 + 1;
@@ -116,7 +107,6 @@ void *lcs_threading(void *id)
 		l1 = l2;
 		l2++;
 	}
-	freeArray((int**)entries, fileLines);
 	pthread_exit(NULL);
 }
 
@@ -165,6 +155,15 @@ int main(int argc, char *argv[]) {
 	if ((argc > 2) && (probSize < fileLines))
 		fileLines = probSize;
 	rewind(fp);
+	
+	entries = malloc(sizeof(char*) *fileLines);
+	for (i = 0; i < fileLines; i++)
+	{
+		if (ferror(fp) || feof(fp))
+			break;
+		entries[i] = malloc(sizeof(char) * LINE_SIZE);
+		fgets(entries[i], LINE_SIZE, fp);
+	}
 
 	// starting pthreading
 	pthread_t threads[NUM_THREADS];
@@ -192,6 +191,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
+	freeArray((int**)entries, fileLines);
 	fclose(fp);
 
 	gettimeofday(&time2, NULL);
