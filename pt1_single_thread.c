@@ -5,34 +5,16 @@
 
 #define NUM_THREADS 24
 
-#define NUM_LINES 1000001
-#define LINE_SIZE 2001
+#define NUM_LINES 3
+#define LINE_SIZE 200
 
 //pthread_mutex_t mutexLock;
 
-void read_file()
-{
-	char entries[NUM_LINES][LINE_SIZE];
-	FILE *fp;
-	int i = 0;
-	errno_t err;
-
-	if ((err = fopen_s(&fp, "C:\\users\\mccochas.USERS\\Documents\\text.txt", "r")) != 0)
-	{
-		printf("Error");
-		return;
-	}
-
-	while (fgets(entries[i], LINE_SIZE, fp) != NULL)
-	{
-		i++;
-	}
-	fclose(fp);
-}
+char results[NUM_LINES][LINE_SIZE];
 
 void longest_common_substring(int line, char* str1, char* str2, int len1, int len2)
 {
-	int lcsLengths[LINE_SIZE+1][LINE_SIZE+1];
+	int lcsLengths[LINE_SIZE + 1][LINE_SIZE + 1];
 	int len = 0;
 	int row, col;
 	for (int i = 0; i <= len1; i++)
@@ -50,7 +32,6 @@ void longest_common_substring(int line, char* str1, char* str2, int len1, int le
 					len = lcsLengths[i][j];
 					row = i;
 					col = j;
-
 				}
 			}
 			else
@@ -58,50 +39,52 @@ void longest_common_substring(int line, char* str1, char* str2, int len1, int le
 		}
 	}
 
-	int totLen = len;
-	char* commonSub = (char*)malloc((len + 1) * sizeof(char));
-
 	while (lcsLengths[row][col] != 0)
 	{
-		commonSub[--len] = str1[row - 1];
+		results[line][--len] = str1[row - 1];
 		row--;
 		col--;
 	}
-	printf("%d-%d: ", line, line+1);
-	int k = 0;
-	for (k = 0; k < totLen; k++)
-		printf("%c", commonSub[k]);
-	printf("%c", '\n');
-	free(commonSub);
+}
+
+void print_results(int lineCount)
+{
+	for (int i = 0; i < lineCount-1; i++)
+	{
+		printf("%d-%d: %s", i, i + 1, results[i]);
+		printf("%c", '\n');
+	}
 }
 
 main() {
-	char entries[NUM_LINES][LINE_SIZE];
-	//read_file();
 	FILE *fp;
 	int lineCount = 0;
 	errno_t err;
-
-	if ((err = fopen_s(&fp, "C:\\users\\mccochas.USERS\\Documents\\text.txt", "r")) != 0)
+	// opening file
+	if ((err = fopen_s(&fp, "text.txt", "r")) != 0)
 	{
 		printf("Error");
 		return;
 	}
 
-	while (fgets(entries[lineCount], LINE_SIZE, fp) != NULL)
+	char entries[NUM_LINES][LINE_SIZE];
+
+	// reading in file
+	while (fgets(entries[lineCount], LINE_SIZE, fp) != NULL && lineCount < NUM_LINES)
 	{
 		entries[lineCount][strlen(entries[lineCount]) - 1] = '\0';
-		lineCount++;
+		lineCount++;	
 	}
-	fclose(fp);
-
-
+	// comparing strings
 	int i = 1;
 	while (i < lineCount)
-	{
+	{		
 		int len1 = strlen(entries[i - 1]);
 		int len2 = strlen(entries[i]);
-		longest_common_substring(i, entries[i - 1], entries[i], strlen(entries[i-1]), strlen(entries[i]));
+		longest_common_substring(i - 1, entries[i - 1], entries[i], strlen(entries[i - 1]), strlen(entries[i]));
 		i++;
 	}
+	// printing results
+	print_results(lineCount);
+	fclose(fp);
 }
