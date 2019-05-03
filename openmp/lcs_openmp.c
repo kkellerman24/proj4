@@ -73,11 +73,11 @@ void longest_common_substring(char* str1, char* str2, int len1, int len2, int li
 	}
 
     // required longest common substring
-   printf("%d-%d: %s\n",l1,l2,resultStr);
+   printf("%d-%d: %s\n",line1,line2,resultStr);
 	free(resultStr);
 }
 
-void lcs_threading(void id)
+void *lcs_threading(void *id)
 {
 	int i, s1, s2;
 	int startPos = ((int)id) * ceil((double)fileLines / NUM_THREADS);
