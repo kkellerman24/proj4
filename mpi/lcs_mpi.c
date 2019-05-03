@@ -77,15 +77,12 @@ void longest_common_substring(char* str1, char* str2, int len1, int len2, int li
 			resultStr[length - 1] = '\0';
 	}
 
-	while (line1 != nextLine)
-		pthread_yield();
+	while (line1 != nextLine) ;
+	// wait until it's our turn
 
-	
-	pthread_mutex_lock(&condition_next_line);
 	nextLine++;
 	if (line1 < 100) // only print first 100 lines
 		printf("%d-%d: %s\n", line1, line2, resultStr);
-	pthread_mutex_unlock(&condition_next_line);
 	
 	free(resultStr);
 }
@@ -107,7 +104,6 @@ void *lcs_threading(void *id)
 		l1 = l2;
 		l2++;
 	}
-	pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
@@ -118,7 +114,6 @@ int main(int argc, char *argv[]) {
 	int lineCount = 0;
 	char *fileName;
 
-	pthread_attr_t attr;
 	void *status;
 	gettimeofday(&time1, NULL);
 	// opening file
