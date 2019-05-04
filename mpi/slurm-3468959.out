@@ -1,4 +1,0 @@
-MPI elves CORES: 4
----PROBLEM SIZE: 1000---
----THREAD COUNT: 4---
-slurmstepd: error: *** JOB 3468959 ON elf25 CANCELLED AT 2019-05-03T17:30:32 ***
