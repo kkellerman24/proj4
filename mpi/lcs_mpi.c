@@ -5,13 +5,20 @@
 #include <sys/time.h>
 #include <math.h>
 
+#define MAX_LINES 1000010
+#define LINE_SIZE 2100
+
 int NUM_THREADS = 24;
 int nextLine = 0;
 
 int fileLines;
+int myStartLine;
+int numLines;
 char** entries;
+//char** results;
+char results[MAX_LINES][LINE_SIZE];
 FILE *fp;
-#define LINE_SIZE 2100
+
 
 void freeArray(int **arr, int length)
 {
@@ -56,38 +63,49 @@ void longest_common_substring(char* str1, char* str2, int len1, int len2, int li
 		return;
 	}
 	// longest common substring allocation
-	char* resultStr = (char*)malloc((len + 1) * sizeof(char));
-	resultStr[len] = '\0';
+	// char* resultStr = (char*)malloc((len + 1) * sizeof(char));
+	results[line1][LINE_SIZE] = '\0';
 
 	while (lcsLengths[row][col] != 0)
 	{
-		resultStr[--len] = str1[row - 1];
+		results[line1][--len] = str1[row - 1];
 		row--;
 		col--;
 	}
 	freeArray(lcsLengths, len1);
 	size_t length;
-	if ((length = strlen(resultStr)) > 0) 
+	if ((length = strlen(results[line1])) > 0) 
 	{
-		if (resultStr[length - 1] == '\n')
-			resultStr[length - 1] = '\0';
+		if (results[line1][length - 1] == '\n')
+			results[line1][length - 1] = '\0';
 	}
 
-	while (line1 != nextLine) ;
+	//while (line1 != nextLine) ;
 	// wait until it's our turn
 
 	nextLine++;
-	if (line1 < 100) // only print first 100 lines
-		printf("%d-%d: %s\n", line1, line2, resultStr);
+	//if (line1 < 100) // only print first 100 lines
+	//printf("%d-%d: %s\n", line1, line2, results[line1]);
 	
-	free(resultStr);
+	//free(resultStr);
 }
 
 void *lcs_threading(void *id)
 {
+	MPI_Status Status;
 	int i, s1, s2;
 	int startPos = ((int)id) * ceil((double)fileLines / NUM_THREADS);
 	int endPos = startPos + ceil((double)fileLines / NUM_THREADS);
+	// new
+	//numLines = endPos-startPos;
+	//myStartLine = startPos;
+	//char **results = malloc(sizeof(char*) * (numLines));
+	//for (i = 0; i < fileLines; i++)
+	//{
+	//	results[i] = malloc(sizeof(char) * LINE_SIZE);
+	//}
+	
+	int num = NUM_THREADS;
 
 	int l1 = startPos;
 	int l2 = l1 + 1;
@@ -100,13 +118,49 @@ void *lcs_threading(void *id)
 		l1 = l2;
 		l2++;
 	}
+	
+	if ((int)id != 0)
+	{
+		int flag = 0;
+		while(!flag)
+		{
+			MPI_Iprobe( (int)id-1, 0, MPI_COMM_WORLD, &flag, &Status );
+		}
+		
+		MPI_Recv(&num, 1, MPI_INT, (int)id-1, 0, MPI_COMM_WORLD, &Status);
+		num--;
+	}
+	
+	for (i = startPos; (i < endPos) && (i+1<fileLines); i++)
+	{
+		//printf("%d-%d: %s\n", i, i+1, results[i]);
+	}
+	
+	if ((int)id < NUM_THREADS-1)
+	{
+		MPI_Send(&num, 1, MPI_INT, (int)id+1, 0, MPI_COMM_WORLD);
+	}
 }
 
 int main(int argc, char *argv[]) {
+	// start mpi
+	int threadCode, num = 0;
+	MPI_Status Status;
+	threadCode = MPI_Init(&argc,&argv);
+	if (threadCode != MPI_SUCCESS) 
+	{
+		printf ("Error starting MPI.\n");
+        MPI_Abort(MPI_COMM_WORLD, threadCode);
+    }
+		
+	int tasks, rank;
+	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+    MPI_Comm_size(MPI_COMM_WORLD,&tasks);
+	
 	struct timeval time1, time2;
 	double elapsedTime;
 	int version = 1;
-	int probSize, threadCode, i;
+	int probSize, i;
 	int lineCount = 0;
 	char *fileName;
 
@@ -117,13 +171,12 @@ int main(int argc, char *argv[]) {
 	if ((argc == 2)) {
 		fileName = argv[1]; //get name from argument
 	}
-	else if (argc == 4) {
+	else if (argc == 3) {
 		fileName = argv[1];
 		probSize = strtol(argv[2], NULL, 10);
-		NUM_THREADS = strtol(argv[3], NULL, 10);
 	}
 	else {
-		printf("Usage: ./program <file> | <problem size> <thread count>\n");
+		printf("Usage: ./program <file> | <problem size>\n");
 		return 1;
 	}
 	// opening file
@@ -155,38 +208,38 @@ int main(int argc, char *argv[]) {
 		entries[i] = malloc(sizeof(char) * LINE_SIZE);
 		fgets(entries[i], LINE_SIZE, fp);
 	}
-
-	int tasks, rank;
-	
-	MPI_Status Status;
-	
-	// start mpi
-	threadCode = MPI_Init(&argc,&argv);
-	if (threadCode != MPI_SUCCESS) 
-	{
-		printf ("Error starting MPI.\n");
-        MPI_Abort(MPI_COMM_WORLD, threadCode);
-    }
-		
-    MPI_Comm_size(MPI_COMM_WORLD,&tasks);
-    MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-
+  
 	NUM_THREADS = tasks;
+
 	// running the function by thread rank
 	lcs_threading(rank);
 
-	MPI_Finalize();
+	MPI_Barrier(MPI_COMM_WORLD);
+	
 	if (rank == 0)
 	{
+		int flag = 0;
+		while(!flag)
+		{
+			MPI_Iprobe( (int)NUM_THREADS-1, 0, MPI_COMM_WORLD, &flag, &Status );
+		}
+		
+		MPI_Recv(&num, 1, MPI_INT, (int)NUM_THREADS-1, 0, MPI_COMM_WORLD, &Status);
+		num--;
 		// printing data
-		gettimeofday(&t2, NULL);
-		elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0; //sec to ms
-		elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0; // us to ms
+		gettimeofday(&time2, NULL);
+		elapsedTime = (time2.tv_sec - time1.tv_sec) * 1000.0; //sec to ms
+		elapsedTime += (time2.tv_usec - time1.tv_usec) / 1000.0; // us to ms
 		printf("DATA, %d, %s, %f\n", version, getenv("SLURM_CPUS_ON_NODE"),  elapsedTime);
 	}
-	// end mpi
+	else if (rank == NUM_THREADS-1)
+	{
+		MPI_Send(&num, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);	
+	}
 	
 	freeArray((int**)entries, fileLines);
 	fclose(fp);
+	MPI_Finalize();
+	// end mpi
 	return 0;
 }

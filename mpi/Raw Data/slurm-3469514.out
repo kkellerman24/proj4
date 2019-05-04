@@ -1,0 +1,29 @@
+MPI elves CORES: 4
+---PROBLEM SIZE: 1000---
+---THREAD COUNT: 4---
+[elf32:40110] *** Process received signal ***
+[elf32:40110] Signal: Segmentation fault (11)
+[elf32:40110] Signal code: Address not mapped (1)
+[elf32:40110] Failing at address: 0xfffffffffffff830
+[elf32:40110] [ 0] /lib64/libc.so.6(+0x36280)[0x7f2636707280]
+[elf32:40110] [ 1] lcs_mpi[0x402434]
+[elf32:40110] [ 2] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f26366f33d5]
+[elf32:40110] [ 3] lcs_mpi[0x401e29]
+[elf32:40110] *** End of error message ***
+[elf32:40111] *** Process received signal ***
+[elf32:40111] Signal: Segmentation fault (11)
+[elf32:40111] Signal code: Address not mapped (1)
+[elf32:40111] Failing at address: (nil)
+[elf32:40111] [ 0] /lib64/libc.so.6(+0x36280)[0x7f2e4d65a280]
+[elf32:40111] [ 1] lcs_mpi[0x402434]
+[elf32:40111] [ 2] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f2e4d6463d5]
+[elf32:40111] [ 3] lcs_mpi[0x401e29]
+[elf32:40111] *** End of error message ***
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 40110 on node elf32 exited on signal 11 (Segmentation fault).
+--------------------------------------------------------------------------
+2 total processes killed (some possibly by mpirun during cleanup)

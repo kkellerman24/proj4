@@ -1,3 +1,5 @@
+#!/bin/bash
+
 fname='/homes/dan/625/wiki_dump.txt'
 searchtext='DATA'
 nthreads=$3

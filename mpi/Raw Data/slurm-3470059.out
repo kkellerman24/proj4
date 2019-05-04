@@ -1,0 +1,11 @@
+MPI elves CONFIG: 16x2
+---PROBLEM SIZE: 500000---
+---THREAD COUNT: 16---
+--------------------------------------------------------------------------
+There are not enough slots available in the system to satisfy the 16 slots
+that were requested by the application:
+  lcs_mpi
+
+Either request fewer slots for your application, or make more slots available
+for use.
+--------------------------------------------------------------------------

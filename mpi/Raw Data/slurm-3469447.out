@@ -1,0 +1,11 @@
+MPI elves CORES: 16
+---PROBLEM SIZE: 1000000---
+---THREAD COUNT: 16---
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun noticed that process rank 14 with PID 34012 on node elf70 exited on signal 9 (Killed).
+--------------------------------------------------------------------------
+slurmstepd: error: Detected 9786 oom-kill event(s) in step 3469447.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.

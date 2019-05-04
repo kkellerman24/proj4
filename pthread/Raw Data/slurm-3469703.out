@@ -1,0 +1,4 @@
+PTHREAD elves CORES: 1
+---PROBLEM SIZE: 100000---
+---THREAD COUNT: 32---
+slurmstepd: error: *** JOB 3469703 ON elf58 CANCELLED AT 2019-05-04T02:11:25 ***

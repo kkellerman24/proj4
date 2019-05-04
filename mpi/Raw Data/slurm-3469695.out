@@ -1,0 +1,4 @@
+MPI elves CORES: 1
+---PROBLEM SIZE: 1000000---
+---THREAD COUNT: 1---
+slurmstepd: error: *** JOB 3469695 ON elf58 CANCELLED AT 2019-05-04T02:10:03 ***
