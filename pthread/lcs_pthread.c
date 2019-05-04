@@ -5,8 +5,12 @@
 #include <sys/time.h>
 #include <math.h>
 
+#define MAX_LINES 1000010
+#define LINE_SIZE 2100
+
 int NUM_THREADS = 24;
 int nextLine = 0;
+int nextThread = 0;
 
 pthread_mutex_t condition_next_line = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -15,7 +19,8 @@ pthread_cond_t condition_cond = PTHREAD_COND_INITIALIZER;
 int fileLines;
 char** entries;
 FILE *fp;
-#define LINE_SIZE 2100
+char results[MAX_LINES][LINE_SIZE];
+
 
 void freeArray(int **arr, int length)
 {
@@ -60,34 +65,34 @@ void longest_common_substring(char* str1, char* str2, int len1, int len2, int li
 		return;
 	}
 	// longest common substring allocation
-	char* resultStr = (char*)malloc((len + 1) * sizeof(char));
-	resultStr[len] = '\0';
+	//char* resultStr = (char*)malloc((len + 1) * sizeof(char));
+	results[line1][len] = '\0';
 
 	while (lcsLengths[row][col] != 0)
 	{
-		resultStr[--len] = str1[row - 1];
+		results[line1][--len] = str1[row - 1];
 		row--;
 		col--;
 	}
 	freeArray(lcsLengths, len1);
 	size_t length;
-	if ((length = strlen(resultStr)) > 0) 
+	if ((length = strlen(results[line1])) > 0) 
 	{
-		if (resultStr[length - 1] == '\n')
-			resultStr[length - 1] = '\0';
+		if (results[line1][length - 1] == '\n')
+			results[line1][length - 1] = '\0';
 	}
 
-	while (line1 != nextLine)
-		pthread_yield();
+	//while (line1 != nextLine)
+		//pthread_yield();
 
 	
-	pthread_mutex_lock(&condition_next_line);
-	nextLine++;
-	if (line1 < 100) // only print first 100 lines
-		printf("%d-%d: %s\n", line1, line2, resultStr);
-	pthread_mutex_unlock(&condition_next_line);
+	//pthread_mutex_lock(&condition_next_line);
+	//nextLine++;
+	//if (line1 < 100) // only print first 100 lines
+		//printf("%d-%d: %s\n", line1, line2, resultStr);
+	//pthread_mutex_unlock(&condition_next_line);
 	
-	free(resultStr);
+	//free(resultStr);
 }
 
 void *lcs_threading(void *id)
@@ -107,6 +112,17 @@ void *lcs_threading(void *id)
 		l1 = l2;
 		l2++;
 	}
+	
+	while ((int)id != nextThread)
+		pthread_yield();
+	
+	for (i = startPos; (i < endPos) && (i + 1 < fileLines); i++)
+	{
+		//printf("%d-%d: %s\n", i, i+1, results[i]);
+	}
+	
+	nextThread++;
+	
 	pthread_exit(NULL);
 }
 

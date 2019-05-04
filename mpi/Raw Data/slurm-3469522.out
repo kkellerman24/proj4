@@ -1,0 +1,38 @@
+[elf38:38388] *** Process received signal ***
+[elf38:38388] Signal-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+4 total processes killed (some possibly by mpirun during cleanup)
+] [ 3] lcs_mpi[0x401e29]
+[elf38:38388] *** End of error message ***
+[elf38:38391] *** Process received signal ***
+[elf38:38391] Signal: Segmentation fault (11)
+[elf38:38391] Signal code: Address not mapped (1)
+[elf38:38391] Failing at address: (nil)
+[elf38:38391] [ 0] /lib64/libc.so.6(+0x36280)[0x7f1443607280]
+[elf38:38391] [ 1] lcs_mpi[0x40243b]
+[elf38:38391] [ 2] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f14435f33d5]
+[elf38:38391] [ 3] lcs_mpi[0x401e29]
+[elf38:38391] *** End of error message ***
+[elf38:38389] *** Process received signal ***
+[elf38:38389] Signal: Segmentation fault (11)
+[elf38:38389] Signal code: Address not mapped (1)
+[elf38:38389] Failing at address: (nil)
+[elf38:38389] [ 0] /lib64/libc.so.6(+0x36280)[0x7f8344588280]
+[elf38:38389] [ 1] lcs_mpi[0x40243b]
+[elf38:38389] [ 2] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f83445743d5]
+[elf38:38389] [ 3] lcs_mpi[0x401e29]
+[elf38:38389] *** End of error message ***
+[elf38:38390] *** Process received signal ***
+[elf38:38390] Signal: Segmentation fault (11)
+[elf38:38390] Signal code: Address not mapped (1)
+[elf38:38390] Failing at address: (nil)
+[elf38:38390] [ 0] /lib64/libc.so.6(+0x36280)[0x7fcb6885c280]
+[elf38:38390] [ 1] lcs_mpi[0x40243b]
+[elf38:38390] [ 2] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7fcb688483d5]
+[elf38:38390] [ 3] lcs_mpi[0x401e29]
+[elf38:38390] *** End of error message ***
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 38388 on node elf38 exited on signal 11 (Segmentation fault).
+--------------------------------------------------------------------------

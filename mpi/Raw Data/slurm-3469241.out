@@ -1,0 +1,14 @@
+MPI elves CORES: 16
+---PROBLEM SIZE: 1000000---
+---THREAD COUNT: 16---
+[warn] epoll_wait: Bad address
+[warn] poll: Bad address
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 390 on node elf76 exited on signal 9 (Killed).
+--------------------------------------------------------------------------
+4 total processes killed (some possibly by mpirun during cleanup)
+slurmstepd: error: Detected 22972 oom-kill event(s) in step 3469241.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
