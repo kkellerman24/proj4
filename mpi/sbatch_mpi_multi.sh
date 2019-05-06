@@ -3,7 +3,7 @@
 #	1 run
 #	Type(3): pthreads, openmp, mpi
 #	Cpu(10): 1,2,4,8,16,32,2x4, 4x4, 16x2, 2x16
-#	Problem size(4): 10k, 100k, 500k, 1M
+#	Problem size(5): 1k, 10k, 100k, 500k, 1M
 mem='32G'
 cons='elves'
 ptype='mpi'
