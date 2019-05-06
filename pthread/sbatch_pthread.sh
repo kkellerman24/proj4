@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#	10 runs each
+#	1 run
 #	Type(3): pthreads, openmp, mpi
 #	Cpu(10): 1,2,4,8,16,32,2x4, 4x4, 16x2, 2x16
-#	Problem size(4): 10k, 100k, 500k, 1M
+#	Problem size(5): 1k, 10k, 100k, 500k, 1M
 mem='16G'
 cons='elves'
 ptype='pthread'
 capptype='PTHREAD'
-nthreads='1 2 32'
+nthreads='1 2 4 8 16 32'
 problem='1000 10000 100000 500000 1000000'
 
 ncores='1 2 4 8 16'
