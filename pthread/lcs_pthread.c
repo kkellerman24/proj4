@@ -118,7 +118,7 @@ void *lcs_threading(void *id)
 	
 	for (i = startPos; (i < endPos) && (i + 1 < fileLines); i++)
 	{
-		//printf("%d-%d: %s\n", i, i+1, results[i]);
+		printf("%d-%d: %s\n", i, i+1, results[i]);
 	}
 	
 	nextThread++;
